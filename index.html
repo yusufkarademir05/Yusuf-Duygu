@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duygu & Yusuf</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;1,400&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --primary-pink: #ff5e9c;
+    --soft-pink: #fff0f5;
+    --dark-text: #4a2c3a;
+    --accent-red: #ff2d75;
+    --yt-red: #FF0000;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(180deg, var(--soft-pink), #ffd6e8);
+    background-attachment: fixed;
+    color: var(--dark-text);
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* UI/UX: Okunabilirlik katmanı */
+.content-wrapper {
+    position: relative;
+    z-index: 10;
+    padding: 20px;
+}
+
+/* Başlangıç ekranı */
+.start-screen {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--soft-pink);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    transition: opacity 0.8s ease;
+}
+
+button.start-btn {
+    padding: 18px 40px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #ff8fb1, var(--primary-pink));
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 25px rgba(255,94,156,0.4);
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 1px;
+}
+
+button.start-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(255,94,156,0.5);
+}
+
+/* İçerik Kartı */
+.hidden { display: none; opacity: 0; }
+
+.main-card {
+    max-width: 800px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    border-radius: 30px;
+    padding: 40px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+.header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+#counter { 
+    margin-top: 15px; 
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-red);
+    letter-spacing: 1px;
+}
+
+.words {
+    margin-top: 50px;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    opacity: 0;
+    transition: 2s;
+}
+
+.poem {
+    margin: 60px auto;
+    line-height: 2.1;
+    font-size: 1.3rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    opacity: 0;
+    transition: 2s;
+    white-space: pre-line;
+}
+
+.highlight {
+    color: var(--accent-red);
+    font-weight: bold;
+    text-shadow: 0 0 15px rgba(255,45,117,0.2);
+}
+
+.footer { margin-top: 40px; font-size: 0.9rem; opacity: 0.7; }
+
+/* YouTube Box Tasarımı */
+.video-box {
+    margin: 40px auto 20px auto;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    border: 1px dashed var(--primary-pink);
+    transition: all 0.3s ease;
+    max-width: 400px;
+}
+
+.video-box p {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--dark-text);
+}
+
+.yt-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    color: white;
+    background: var(--yt-red);
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+}
+
+.yt-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.yt-button:hover {
+    transform: scale(1.05);
+    background: var(--accent-red);
+    box-shadow: 0 8px 20px rgba(255, 45, 117, 0.4);
+}
+
+/* Kalp Animasyonları */
+.heart-bg {
+    position: fixed;
+    top: -10%;
+    z-index: 1;
+    pointer-events: none;
+    color: rgba(255, 45, 117, 0.15);
+    animation: floatDown linear infinite;
+}
+
+@keyframes floatDown {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+.click-heart {
+    position: absolute;
+    z-index: 99;
+    pointer-events: none;
+    color: var(--accent-red);
+    font-size: 20px;
+    animation: popOut 1s ease-out forwards;
+}
+
+@keyframes popOut {
+    0% { transform: scale(0) rotate(0); opacity: 1; }
+    100% { transform: scale(1.5) translate(var(--tx), var(--ty)) rotate(var(--tr)); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="start-screen" id="start">
+    <button class="start-btn" onclick="startExperience()">Senin için bir şey var 💗</button>
+</div>
+
+<div id="content" class="content-wrapper hidden">
+    <div class="main-card">
+        <div class="header">
+            <h1>Duygu & <span class="highlight">Yusuf</span></h1>
+            <p>28.02.2026 tarihinden beri her an seninle...</p>
+            <div id="counter"></div>
+        </div>
+
+        <div class="words" id="words">
+            Bazen bir insan gelir...<br>
+            ve bütün hayatının anlamı değişir.<br><br>
+            Sen benim için öyle bir yerdesin ki <span class="highlight">Duygu</span>,<br>
+            anlatmaya kalksam kelimeler eksik kalır.<br><br>
+            Ama şunu biliyorum;<br>
+            seni sevmek, bu hayatta yaptığım en doğru şey.
+        </div>
+
+        <div class="poem" id="poem">
+            <strong>Bir Aylık Gökyüzü</strong>
+            İçimde bir yerlerde adın geçiyor, durduramıyorum,
+            Hangi sokağa sapsam, ucu sana çıkıyor bu kentin.
+            Gözlerin diyorum <span class="highlight">Duygu</span>; hani o bakınca dünyayı unutturan,
+            İşte o denizlerde ben, her sabah yeniden boğuluyorum.
+            Sen benim en güzel yanılgım, en berrak gerçeğimsin,
+            Bir aydır soluduğum hava değil, sensin; biliyorum.
+
+            Basbayağı aşıksın diyorlar bana, hiç itiraz etmiyorum,
+            Çünkü ellerin değince ellerime, mevsimler değişiyor.
+            Zamanın saçlarına takılıp kalmışım, kopamıyorum,
+            Bir ay değil de, sanki asırlardır seni bekliyorum.
+            Sen benim saklım, gizlim, en avaz avaz sustuğumsun,
+            Yollar ne kadar uzak olsa da, ben sende dinleniyorum.
+
+            İnan ki <span class="highlight">Duygu</span>, seni her şeyden çok seviyorum,
+            Bu şiir değil, bu bir adamın kalbinden sızan ses.
+            Kelimeler yetmiyor bazen, cümleler yarıda kalıyor,
+            Ama bakışlarım her şeyi, en ince ayrıntısıyla anlatıyor.
+            İyi ki geldin, iyi ki bu yolu benimle yürüyorsun,
+            Ben bu hayatta en çok, seninle kendim oluyorum.
+        </div>
+
+        <div class="video-box">
+            <p>Dünyamın En Güzel Kızına... 🎵</p>
+            <a href="https://www.youtube.com/watch?v=ScoYMC81Foc" target="_blank" class="yt-button">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                </svg>
+                Şarkımızı Dinle
+            </a>
+        </div>
+
+        <div class="footer">
+            Nice aylara, nice yıllara... - <strong>Yusuf</strong>
+        </div>
+    </div>
+</div>
+
+<script>
+function startExperience(){
+    const startScreen = document.getElementById("start");
+    const content = document.getElementById("content");
+    
+    startScreen.style.opacity = "0";
+    setTimeout(() => {
+        startScreen.style.display = "none";
+        content.classList.remove("hidden");
+        content.style.opacity = "1";
+        createBackgroundHearts();
+    }, 800);
+
+    setTimeout(() => { document.getElementById("words").style.opacity="1"; }, 1200);
+    setTimeout(() => { document.getElementById("poem").style.opacity="1"; }, 2500);
+}
+
+function updateCounter(){
+    const startDate = new Date(2026, 1, 28, 2, 32, 0); 
+    const now = new Date();
+    let diff = now - startDate;
+    if(diff < 0) diff = 0;
+
+    const days = Math.floor(diff/(1000*60*60*24));
+    const hours = Math.floor((diff/(1000*60*60))%24);
+    const minutes = Math.floor((diff/(1000*60))%60);
+    const seconds = Math.floor((diff/1000)%60);
+
+    document.getElementById("counter").innerHTML = 
+        `${days} Gün ${hours} Saat ${minutes} Dakika ${seconds} Saniye`;
+}
+setInterval(updateCounter, 1000);
+updateCounter();
+
+function createBackgroundHearts(){
+    setInterval(() => {
+        const heart = document.createElement("div");
+        heart.className = "heart-bg";
+        heart.innerHTML = "❤";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (Math.random() * 15 + 10) + "px";
+        heart.style.animationDuration = (Math.random() * 5 + 7) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 12000);
+    }, 600);
+}
+
+document.addEventListener('click', function(e){
+    const heartCount = 6;
+    for(let i=0; i<heartCount; i++){
+        const h = document.createElement('div');
+        h.className = 'click-heart';
+        h.innerHTML = '❤';
+        
+        const x = e.pageX;
+        const y = e.pageY;
+        
+        h.style.left = x + 'px';
+        h.style.top = y + 'px';
+        
+        const tx = (Math.random() - 0.5) * 200 + 'px';
+        const ty = (Math.random() - 0.5) * 200 + 'px';
+        const tr = (Math.random() * 360) + 'deg';
+        
+        h.style.setProperty('--tx', tx);
+        h.style.setProperty('--ty', ty);
+        h.style.setProperty('--tr', tr);
+        
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 1000);
+    }
+});
+</script>
+
+</body>
+</html>
